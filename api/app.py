@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from dotenv import load_dotenv
 from routes.auth import routes_auth
+from routes.task_list import routes_task
 from routes.users_list import routes_user
 from models import user_, task
 from database import db
@@ -24,6 +25,7 @@ migrate.init_app(app, db)
 
 app.register_blueprint(routes_auth, url_prefix="/api")
 app.register_blueprint(routes_user, url_prefix="/user")
+app.register_blueprint(routes_task, url_prefix="/task")
 
 
 @app.route("/")

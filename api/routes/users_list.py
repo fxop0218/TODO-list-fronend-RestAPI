@@ -39,6 +39,7 @@ def register_user():
             return jsonify({"message": "False"})
 
 
+# Needs json with "username": "xxxx", "password": "xxxx"
 @routes_user.route("/login", methods=["GET"])
 def login_user():
     data = request.get_json()
@@ -49,7 +50,13 @@ def login_user():
             user = user_.query.filter_by(username=username).one()
 
             if user.password == password:
-                return jsonify({"message": "True"})
+                return jsonify(
+                    {
+                        "message": "True",
+                        "user_id": user.id,
+                        "username": user.username,
+                    }
+                )
             return jsonify({"message": "False"})
         except Exception as e:
             return jsonify({"message": "False"})

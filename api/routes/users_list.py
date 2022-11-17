@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from requests import get
 from jwt_func import validate_token
-from helpful_scripts import encript
+from helpful_scripts import encript, serializable_task
 from models import user_
 from database import db
 
@@ -60,3 +60,24 @@ def login_user():
             return jsonify({"message": "False"})
         except Exception as e:
             return jsonify({"message": "False"})
+
+
+@routes_user.route("/task_list", methods=["GET"])
+def get_tasks():
+    try:
+        data = request.get_json()
+
+        try:
+            user = user_.query.get_or_404(data["user_id"])
+        except Exception:
+            return jsonify({"message": "No user found"})
+
+        if len(user.task_list) <= 0:
+            return jsonify({"message": "No task listed"})
+
+        tasks = [serializable_task(x) for x in user.task_list]
+        return jsonify({"task_list": tasks})
+
+    except Exception:
+        return jsonify({"message": "False"})
+    # return jsonify(user.task_list)

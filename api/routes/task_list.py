@@ -43,8 +43,74 @@ def create():
                 return jsonify({"message": "True"})
             except Exception:
                 return jsonify({"message": "False"})
-            return jsonify({"message": "True"})
         except Exception:
             return jsonify({"message": "False"})
 
     return jsonify({"message": "False"})
+
+
+@routes_task.route("/add", methods=["POST"])
+def add_uses():
+    data = request.get_json()
+    if request.method == "POST":
+        try:
+            task_id = data["task_id"]
+            user_id = data["user_id"]
+            new_user_id = data["new_users_id"]  # array
+
+            try:
+                task_ = task.query.get_or_404(task_id)
+            except Exception:
+                return jsonify({"message": "Task does not exist"})
+
+            if len(new_user_id) <= 0:
+                return jsonify({"message": "No task added"})
+            admin_user = user_.query.get_or_404(user_id)
+            print(f"Admin task list: {admin_user.task_list}")
+            if task_ not in (admin_user.task_list):
+                return jsonify({"message": "User without this task"})
+
+            for user in new_user_id:
+                new_user = user_.query.get(user)
+                if task_id not in new_user.task_list:
+                    new_user.task_list.append(task_)
+            db.session.commit()
+            return jsonify({"message": "True"})
+
+        except Exception as e:
+            return jsonify({"message": "False"})
+
+
+@routes_task.route("/delete", methods=["POST"])
+def delete_task():
+    try:
+        if request.method == "POST":
+            data = request.get_json()
+            user_id = data["user_id"]
+            task_id = data["task_id"]
+
+            try:
+                user = user_.query.get_or_404(user_id)
+                task_ = task.query.get_or_404(task_id)
+            except Exception:
+                return jsonify({"message": "Task or user erro"})
+
+            if task_ not in user.task_list:
+                return jsonify({"message": "This task dosn't exists in your list"})
+
+            try:
+                db.session.delete(task_)
+                db.session.commit()
+            except Exception:
+                return jsonify({"message": "Error deleting task"})
+        return jsonify({"message": "True"})
+    except Exception: return jsonify({"message": "False"})
+
+
+@routes_task.route("/test", methods=["GET", "POST"])
+def test():
+    data = request.get_json()
+    if request.method == "POST":
+        exemple = data["exemple"]
+        n_exemple = len(exemple)
+        return jsonify({"message": n_exemple})

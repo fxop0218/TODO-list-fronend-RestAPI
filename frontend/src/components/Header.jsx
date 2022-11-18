@@ -34,12 +34,12 @@ export const Header = () => {
                             Mainpage
                         </NavLink>
                         <NavLink
-                            to="/info"
+                            to="/Login"
                             className="p-3"
                             activeClassName="active"
                             style={({ isActive }) => ({ color: isActive ? "blue" : "black" })}
                         >
-                            Info
+                            Login
                         </NavLink>
                         <button onClick={exit} className="text-black p-3 rounded bg-red-400">
                             Default

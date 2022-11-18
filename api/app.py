@@ -1,9 +1,9 @@
 from flask import Flask, jsonify
 from dotenv import load_dotenv
-from routes.auth import routes_auth
+from models import user_, task
+from routes.auth import routes_auth # Use venv interprete ()
 from routes.task_list import routes_task
 from routes.users_list import routes_user
-from models import user_, task
 from database import db
 from flask_migrate import Migrate
 
